@@ -2,40 +2,43 @@ import scrapy
 class MedScrap(scrapy.Spider):
     name = 'med'
     start_urls = ['https://healthapps.dhss.mo.gov/showmeltc/default.aspx']
+    nexturl='https://healthapps.dhss.mo.gov/showmeltc/default.aspx'
     # download_delay = 1.5
 
+
     def parse(self, response):
-        dropdown=response.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
-        for drop in dropdown:
+       ponse.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
+        drop_list=response.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
+        for l in drop_list:
+            
             yield scrapy.FormRequest(
-                'https://healthapps.dhss.mo.gov/showmeltc/default.aspx',
+                url=self.nexturl,
                 formdata={
-                    # 'author': author,
-                    'ContentPlaceHolder1_ddlCounty' : response.css(
-                        'select#ContentPlaceHolder1_ddlCounty > option[selected] ::attr(value)').extract_first(),
-                    '__VIEWSTATE': response.css('input#__VIEWSTATE::attr(value)').extract_first()
+                    
+                    '__EVENTTARGET': l ,
+                    'ContentPlaceHolder1_ddlCounty': response.css(
+                        'select#ContentPlaceHolder1_ddlCounty > option[selected] ::attr(value)'
+                    ).extract_first(),
+
+                    '__VIEWSTATE': response.css('input#__VIEWSTATE::attr(value)').extract_first(),
+                    
                 },
-                # callback=self.parse_tags
+                callback=self.parse_button
+
+                
             )
+            
 
-    # def parse_tags(self, response):
-    #     for tag in response.css('select#tag > option ::attr(value)').extract():
-    #         yield scrapy.FormRequest(
-    #             'http://quotes.toscrape.com/filter.aspx',
-    #             formdata={
-    #                 'author': response.css(
-    #                     'select#author > option[selected] ::attr(value)'
-    #                 ).extract_first(),
-    #                 'tag': tag,
-    #                 '__VIEWSTATE': response.css('input#__VIEWSTATE::attr(value)').extract_first()
-    #             },
-    #             callback=self.parse_results,
-    #         )
+    def parse_button(self, response):
+        # response.css('input#ContentPlaceHolder1_btnShowMeResults')
+        response.css('input#ContentPlaceHolder1_btnShowMeResults').get()
+        
+        # 'https://healthapps.dhss.mo.gov/showmeltc/default.aspx'
 
-    # def parse_results(self, response):
-    #     for quote in response.css("div.quote"):
-    #         yield {
-    #             'quote': quote.css('span.content ::text').extract_first(),
-    #             'author': quote.css('span.author ::text').extract_first(),
-    #             'tag': quote.css('span.tag ::text').extract_first(),
-    #         }
+        page = response.css('div.tbody').extract()
+        print (page)
+        filename = 'newfile.html' 
+        with open(filename, 'wb') as f:
+            f.write(page)
+        self.log('Saved file %s' % filename)
+
