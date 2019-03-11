@@ -7,7 +7,7 @@ class MedScrap(scrapy.Spider):
 
 
     def parse(self, response):
-       ponse.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
+        response.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
         drop_list=response.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
         for l in drop_list:
             
@@ -37,8 +37,8 @@ class MedScrap(scrapy.Spider):
 
         page = response.css('div.tbody').extract()
         print (page)
-        filename = 'newfile.html' 
-        with open(filename, 'wb') as f:
-            f.write(page)
-        self.log('Saved file %s' % filename)
+        # filename = 'newfile.html' 
+        # with open(filename, 'wb') as f:
+        #     f.write(page)
+        # self.log('Saved file %s' % filename)
 
