@@ -10,5 +10,13 @@ import scrapy
 
 class MedscrapItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    faculty_name = scrapy.Field()
+    administrator=scrapy.Field()
+    address=scrapy.Field()
+    address2=scrapy.Field()
+    phonenumber=scrapy.Field()
+    operator=scrapy.Field()
+    total_lisence_beds=scrapy.Field()
+    medicare=scrapy.Field()
+    medicaid=scrapy.Field()
+  
