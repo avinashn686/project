@@ -12,10 +12,12 @@ class MedScrap(scrapy.Spider):
     def parse(self, response):
         
         drop_list=response.css('select#ContentPlaceHolder1_ddlCounty > option ::attr(value)').extract()
-        for l in drop_list:
+        n=len(drop_list)
+        for l in range(1,n,1):
+        	
             
             yield scrapy.FormRequest.from_response(response, formid="ContentPlaceHolder1_pnlSearchandResults",
-                formdata={'ctl00$ContentPlaceHolder1$ddlCounty': l},
+                formdata={'ctl00$ContentPlaceHolder1$ddlCounty': drop_list[l]},
                 callback=self.parse_button
                 )
             
@@ -29,32 +31,35 @@ class MedScrap(scrapy.Spider):
         
         for row in rows[1:]:
             next_page=row.css('td').css('a::attr(href)').extract_first()
-            #printing extracted links
-            print (next_page)
-            d.append(next_page)
+                        d.append(next_page)
         
-            # for i in range(len(d)):
-            # # print(i)
-            #     j='ctl00$ContentPlaceHolder1$gvSearchResults'
-            #     yield scrapy.FormRequest.from_response(response, 
-            #         formdata={'__EVENTTARGET' : j,
-            #         '__EVENTARGUMENT': 'select$%s' +str(i),
-            #     # formdata={'select':i,
-                
-                
-            #         },
-            #     callback=self.output
+        for i in range(0,len(d),1):
+            
+            r=''
+            j='ctl00$ContentPlaceHolder1$gvSearchResults'
+            k='select$'
+            r=k+str(i)
 
-                # )
+            yield scrapy.FormRequest.from_response(response, formid="ContentPlaceHolder1_PnlsrchResults",
+                formdata={
+                '__EVENTTARGET':j ,
+                '__EVENTARGUMENT': r,
+                
+                
+                
+                },
+            callback=self.output
+
+            )
             
 
     
-    # def output(self, response):
+    def output(self, response):
         
-    #     filename = 'newfile.html' 
-    #     with open(filename, 'ab') as f:
-    #         f.write(response.body)
-    #     self.log('Saved file %s' % filename)
+        filename = 'newfile4.html' 
+        with open(filename, 'ab') as f:
+            f.write(response.body)
+        self.log('Saved file %s' % filename)
 
 
     
